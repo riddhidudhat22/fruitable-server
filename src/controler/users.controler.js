@@ -141,12 +141,14 @@ const login = async (req, res) => {
         const optionaccess = {
             httpOnly: true,
             sequre: true,
-            maxAge: 36000000
+            maxAge: 36000000,
+            sameSite:"None"
         }
         const optionrefres = {
             httpOnly: true,
             sequre: true,
-            maxAge: 30*24*60*60*1000
+            maxAge: 30*24*60*60*1000,
+             sameSite:"None"
         }
         res.status(200)
             .cookie("AccessToken", accessToken, optionaccess)
@@ -199,7 +201,8 @@ const newtoken = async (req, res) => {
 
         const option = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            sameSite:"None"
         }
 
         res.status(200)
