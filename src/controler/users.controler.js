@@ -158,7 +158,7 @@ const login = async (req, res) => {
                 message: "data fetch successfull",
                 data:{ ...user1.toObject(), accessToken }
             })
-            .redirect("https://frutaible-user.vercel.app")
+           
     } catch (error) {
         console.log(error);
     }
