@@ -3,7 +3,7 @@ const Products = require("../model/products.model");
 const { updatefile } = require("../utils/coulanary");
 
 const listproducts = async (req, res) => {
-    console.log("listproduct");
+    // console.log("listproduct");
     try {
         const product = await Products.find();
 
