@@ -39,7 +39,7 @@ connectDB();
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors({
    origin: 'https://frutaible-user.vercel.app',
-    // origin:'https://localhost:3000',
+    // origin:'http://localhost:3000',
     credentials: true,
     optionsSuccessStatus:200
 }))
