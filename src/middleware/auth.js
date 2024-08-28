@@ -3,7 +3,7 @@ const Users = require('../model/users.model');
 
 const auth = (roles = []) => async (req, res, next) => {
     try {
-        const token = req.cookies.AccessToken || req.headers("Authorization")?.replace("Beareer ", "")
+        const token = req.cookies.AccessToken || req.headers["Authorization"]?.replace("Beareer ", "")
         // console.log(token);
 
         if (!token) {
@@ -15,7 +15,7 @@ const auth = (roles = []) => async (req, res, next) => {
 
         try {
             const validatetoken = await jwt.verify(token, process.env.ACESS_TOKEN)
-            // console.log("aaaaa", validatetoken);
+            console.log("aaaaa", validatetoken);
 
             const user = await Users.findById(validatetoken._id)
             console.log(user, roles);

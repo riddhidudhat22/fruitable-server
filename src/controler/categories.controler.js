@@ -23,7 +23,7 @@ const listcategories = async (req, res) => {
                 message: 'caregorie not found.'
             })
         }
-        let startindex = 0, endindex = 0, pagination = [];
+        let startindex = 0, endindex = 0, pagination = [...categories];
 
         if (page > 0 || pagesize > 0) {
             startindex = (page - 1) * pagesize;  //2-1*3=3
@@ -74,26 +74,26 @@ const getcategories = async (req, res) => {
 
 const addcategories = async (req, res) => {
     console.log("sdfdfd", req.body);
-    // try {
-    //     const category = await Categories.create(req.body);
-    //     console.log(category);
-    //     if (!category) {
-    //         res.status(400).json({
-    //             success: false,
-    //             message: 'category not created'
-    //         })
-    //     }
-    //     res.status(201).json({
-    //         success: true,
-    //         message: 'category created successfully',
-    //         data: category
-    //     })
-    // } catch (error) {
-    //     res.status(500).json({
-    //         success: false,
-    //         message: 'Internal error' + error.message
-    //     })
-    // }
+    try {
+        const category = await Categories.create(req.body);
+        console.log(category);
+        if (!category) {
+            res.status(400).json({
+                success: false,
+                message: 'category not created'
+            })
+        }
+        res.status(201).json({
+            success: true,
+            message: 'category created successfully',
+            data: category
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal error' + error.message
+        })
+    }
 }
 
 const deletecategories = async (req, res) => {

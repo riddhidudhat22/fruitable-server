@@ -1,7 +1,7 @@
 
 const Users = require("../model/users.model");
 const bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const sendmailer = require("../utils/nodemailers");
 const createpdf = require("../utils/pdfmake");
 const pdfcreate = require("../utils/pdfmake");
@@ -18,7 +18,7 @@ const Tokenaccess = async (_id) => {
         expiresIn: 36000000
     },
         process.env.ACESS_TOKEN,
-        { expiresIn: 60*60 });
+        { expiresIn: 60 * 60 });
 
 
     const refreshtoken = await jwt.sign({
@@ -34,17 +34,17 @@ const Tokenaccess = async (_id) => {
 }
 
 const ragister = async (req, res) => {
-    console.log("ragister",req.body);
+    console.log("ragister", req.body);
     try {
-        console.log("saaas",req.body);
+        console.log("saaas", req.body);
         console.log(req.file);
 
         const { email, password } = req.body
         const user = await Users.findOne(
             { $or: [{ email }] }
         )
-        console.log('jjjjjj',user);
-       
+        console.log('jjjjjj', user);
+
         if (user) {
             return res.status(409).json({
                 success: false,
@@ -52,7 +52,7 @@ const ragister = async (req, res) => {
             })
         }
         // console.log(user);
-        
+
 
         const hashassword = await bcrypt.hash(password, 10);
         console.log(hashassword);
@@ -108,7 +108,7 @@ const login = async (req, res) => {
         const { email, password } = req.body
 
         console.log("fffffffffffffff", email, password);
-        
+
         const user = await Users.findOne(
             { $or: [{ email }] }
         );
@@ -133,8 +133,8 @@ const login = async (req, res) => {
             })
         }
 
-        const { accessToken , refreshtoken } = await Tokenaccess(user._id)
-        console.log(accessToken, "sfssf",refreshtoken);
+        const { accessToken, refreshtoken } = await Tokenaccess(user._id)
+        console.log(accessToken, "sfssf", refreshtoken);
 
         const user1 = await Users.findById({ _id: user._id }).select('-password -refreshtoken');
 
@@ -142,13 +142,13 @@ const login = async (req, res) => {
             httpOnly: true,
             sequre: true,
             maxAge: 36000000,
-            sameSite:"None"
+            sameSite: "None"
         }
         const optionrefres = {
             httpOnly: true,
             sequre: true,
-            maxAge: 30*24*60*60*1000,
-             sameSite:"None"
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            sameSite: "None"
         }
         res.status(200)
             .cookie("AccessToken", accessToken, optionaccess)
@@ -156,9 +156,9 @@ const login = async (req, res) => {
             .json({
                 success: true,
                 message: "data fetch successfull",
-                data:{ ...user1.toObject(), accessToken }
+                data: { ...user1.toObject(), accessToken }
             })
-           
+
     } catch (error) {
         console.log(error);
     }
@@ -191,7 +191,7 @@ const newtoken = async (req, res) => {
         }
 
 
-        const { accessToken , refreshtoken } = await Tokenaccess(user._id)
+
 
         if (req.cookies.refreshtoken != user.toObject().refreshtoken) {
             return res.status(401).json({
@@ -199,11 +199,13 @@ const newtoken = async (req, res) => {
                 message: "invalid Token."
             })
         }
+        const { accessToken, refreshtoken } = await Tokenaccess(user._id)
 
         const option = {
             httpOnly: true,
-            secure: true,
-            sameSite:"None"
+            sequre: true,
+            sameSite: "None",
+            // maxAge: 60 * 60 * 24
         }
 
         res.status(200)
@@ -213,7 +215,7 @@ const newtoken = async (req, res) => {
                 success: true,
                 message: "Refresh Token Sucessfully",
                 data: {
-                    user: { accessToken }
+                    accessToken
                 }
             })
     } catch (error) {
@@ -226,7 +228,7 @@ const newtoken = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        console.log("rrrrrrrrrrrrrrrrrrrrrrrrrr",req.body.id);
+        console.log("rrrrrrrrrrrrrrrrrrrrrrrrrr", req.body.id);
         const user = await Users.findByIdAndUpdate(
             req.body._id,
             {
@@ -239,65 +241,65 @@ const logout = async (req, res) => {
             }
         )
         console.log(user);
-        
+
         if (!user) {
             return res.status(400).json({
                 success: false,
                 message: "user not logout"
             })
         }
-    
-         res.status(200)
-        .clearCookie("AccessToken")
-        .clearCookie("refreshtoken")
-        .json({
-            success: true,
-            message: "logout successfull",
 
-        })
+        res.status(200)
+            .clearCookie("AccessToken")
+            .clearCookie("refreshtoken")
+            .json({
+                success: true,
+                message: "logout successfull",
+
+            })
     } catch (error) {
         return res.status(500)
-        // .clearCoockie("AccessToken")
-        .json({
-            success: false,
-            message: "Internal server error: " + error.message
-        })
+            // .clearCoockie("AccessToken")
+            .json({
+                success: false,
+                message: "Internal server error: " + error.message
+            })
 
     }
 }
 
-const authcheck=async(req,res)=>{
-   try {
-    const accessToken=req.cookies.AccessToken
-    console.log("accessToken",accessToken);
-    
-    if (!accessToken) {
-        return res.status(401).json({
+const authcheck = async (req, res) => {
+    try {
+        const accessToken = req.cookies.AccessToken
+        console.log("accessToken", accessToken);
+
+        if (!accessToken) {
+            return res.status(401).json({
+                success: false,
+                message: "accesstoken not found"
+            })
+        }
+
+        const verifytoken = await jwt.verify(accessToken, process.env.ACESS_TOKEN)
+        console.log('verifytoken', verifytoken);
+
+        if (!verifytoken) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Token"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            message: "User Authenticated",
+            data: verifytoken
+        })
+    } catch (error) {
+        return res.status(500).json({
             success: false,
-            message: "accesstoken not found"
+            message: "Internal server error" + error
         })
     }
-
-    const verifytoken=await jwt.verify(accessToken,process.env.ACESS_TOKEN)
-    console.log('verifytoken',verifytoken);
-
-    if (!verifytoken) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid Token"
-        })
-    }
-    return res.status(200).json({
-        success: true,
-        message: "User Authenticated",
-        data: verifytoken
-    })
-   } catch (error) {
-    return res.status(500).json({
-        success: false,
-        message: "Internal server error" + error
-    })
-   }
 }
 
 module.exports = {

@@ -52,33 +52,69 @@ const getsubcategores = async (req, res) => {
 }
 
 
+// const addsubcategories = async (req, res) => {
+
+//     try {
+
+//         const subcategori = await Subcategories.create(req.body)
+//         console.log(subcategori);
+
+//         if (!subcategori) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'All fields are required.'
+//             });
+//         }
+
+//         res.status(201).json({
+//             success: true,
+//             message: 'Subcategory added successfully',
+//             data: subcategori
+//         });
+
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: 'Internal error: ' + error.message
+//         });
+//     }
+// }
 const addsubcategories = async (req, res) => {
-
     try {
+        // Validate request body
+        const { categori_id, name, description } = req.body;
 
-        const subcategori = await Subcategories.create(req.body)
-        console.log(subcategori);
+        if (!categori_id || !name || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required: categori_id, name, and description.',
+            });
+        }
+
+        // Create a new subcategory
+        const subcategori = await Subcategories.create({ categori_id, name, description });
 
         if (!subcategori) {
             return res.status(400).json({
                 success: false,
-                message: 'All fields are required.'
+                message: 'Failed to create subcategory.',
             });
         }
 
         res.status(201).json({
             success: true,
             message: 'Subcategory added successfully',
-            data: subcategori
+            data: subcategori,
         });
 
     } catch (error) {
+        // Improved error handling with specific message
         res.status(500).json({
             success: false,
-            message: 'Internal error: ' + error.message
+            message: 'Internal server error: ' + error.message,
         });
     }
-}
+};
 
 const deletecsubategori = async (req, res) => {
 
