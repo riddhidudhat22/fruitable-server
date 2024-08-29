@@ -14,7 +14,8 @@ router.get('/list-variant',
 // )
 
 
-router.post('/add-variant', upload.array('image', 10), 
+router.post('/add-variant',
+     upload.array('image', 10), 
 variantcontroler.addvariant);
 
 router.delete('/delete-variant/:variant_id',
