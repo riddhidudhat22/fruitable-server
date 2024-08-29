@@ -60,13 +60,13 @@ router.get('/google/callback',
 
             const optionaccess = {
                 httpOnly: true,
-                sequre: true,
+                secure: true,
                 maxAge: 36000000,
                 sameSite:"None"
             }
             const optionrefres = {
                 httpOnly: true,
-                sequre: true,
+                secure: true,
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 sameSite:"None"
             }
