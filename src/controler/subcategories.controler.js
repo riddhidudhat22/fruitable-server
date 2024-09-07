@@ -290,13 +290,29 @@ const highestcategori = async (req, res) => {
 
 const inactivesubcategory = async (req, res) => {
     const inactivesubcategori = await Subcategories.aggregate([
+        // {
+        //     $match: {
+        //         isActive: false
+        //     }
+        // },
+        // {
+        //     $project: {
+        //         _id: 1,
+        //         name: 1, 
+        //         // Add more fields as needed
+        //     }
+        // }
         {
             $match: {
-                isActive: false,
+                isActive: false
             }
         },
         {
-            $count: 'Inactivesubcategori'
+            $project: {
+                _id: 1,
+                name: 1, 
+                
+            }
         }
     ]);
     res.status(200).json({
@@ -362,5 +378,3 @@ module.exports = {
     highestcategori,
     productwithsubcategori
 }
-
-

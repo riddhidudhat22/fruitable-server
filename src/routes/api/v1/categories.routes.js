@@ -9,7 +9,7 @@ const { auth } = require('../../../middleware/auth');
 
 const router = express.Router()
 
-router.get('/get-category',
+router.get('/get-category/:categori_id',
     validation(categorivalidation.getcategory),
     categoriescontroler.getcategories
 );
@@ -63,7 +63,3 @@ router.get("/category-subcategory/:categori_id",
 )
 
 module.exports = router;
-
-
-
-  

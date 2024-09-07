@@ -1,34 +1,24 @@
 const mongoose = require('mongoose');
-const { version } = require('os');
 
-const paymentsScheema = (
-    {
-        order_id: {
-            type: mongoose.Types.ObjectId,
-            ref: 'Orders',
-            require: true
-        },
-        payment_type: {
-            type: String,
-            require: true,
-        },
-        status: {
-            type: String,
-            require: true
-        },
-        isActive: {
-            type: Boolean,
-            default: true,
-
-        }
-
+const paymentsSchema = new mongoose.Schema({
+    order_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Orders'
     },
-    {
-        timeStamp: true,
-        versionKey: false
+    gateway:{
+        type: String
+    },
+    status: {
+        type: String
+    },
+    isActive: {
+        type: Boolean
     }
-);
+}, {
+    timestamps: true,  
+    versionKey: false
+});
 
-const Payments = mongoose.model('Payments', paymentsScheema);
+const Payments = mongoose.model('Payments', paymentsSchema);
 
 module.exports = Payments;

@@ -302,6 +302,201 @@ const authcheck = async (req, res) => {
     }
 }
 
+const listUser = async (req, res) => {
+    try {
+        const user = await Users.find();
+        // console.log(variant);
+
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                meassage: 'user not found.'
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: 'user fetch successfully.',
+            data: user
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            meassage: 'Internal Server Error.' + error.meassage
+        })
+    }
+}
+
+const orderofuser = async (req, res) => {
+    const user = await Users.aggregate([
+        {
+            $match: {
+                isActive: true
+            }
+        },
+        {
+            $lookup: {
+                from: "orders",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "userOrders"
+            }
+        },
+        {
+            $unwind: {
+                path: "$userOrders",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                name: 1,
+                email: 1,
+                "userOrders.orderId": 1,
+                "userOrders.orderDate": 1,
+                "userOrders.totalAmount": 1
+            }
+        },
+        {
+            $sort: {
+                "userOrders.orderDate": -1
+            }
+        },
+        {
+            $limit: 100
+        }
+    ])
+    res.status(200).json({
+        success: true,
+        message: 'user fetch successfully.',
+        data: user
+    })
+}
+
+const updateUser = async (req, res) => {
+    try {
+        const user = await Users.findByIdAndUpdate(req.params.users_id, req.body, { new: true, runValidators: true });
+
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: 'user not updated.'
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: 'user updated successfully.',
+            data: user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error.' + error.message
+        })
+    }
+}
+
+const deleteUser = async (req, res) => {
+    try {
+        const user = await Users.findByIdAndDelete(req.params.users_id)
+
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: 'user not deleted.'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'user deleted successfully.',
+            data: user
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            meassage: 'Internal Server Error.' + error.message
+        })
+    }
+}
+
+const getuserdata = async (req, res) => {
+    try {
+        const user = await Users.findById(req.params.users_id)
+        console.log(user);
+
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                message: 'user not found'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'user found successfuly',
+            data: user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal error' + error.message
+        })
+    }
+}
+
+const searchUser = async (req, res) => {
+    try {
+        const { name, email, page, limit } = req.query;
+
+        const matchPip = {};
+
+        if (name) {
+            matchPip['name'] = { $regex: new RegExp(name, 'i') };
+        }
+
+        if (email) {
+            matchPip['email'] = { $regex: new RegExp(email, 'i') };
+        }
+
+
+        console.log(matchPip);
+
+        const pipline = [
+            {
+                $match: matchPip
+            },
+            {
+                $sort: {
+                    name: 1 // Sorting by name in ascending order
+                }
+            }
+        ];
+
+        if (parseInt(page) > 0 && parseInt(limit) > 0) {
+            pipline.push({ $skip: (parseInt(page) - 1) * parseInt(limit) });
+            pipline.push({ $limit: parseInt(limit) });
+        }
+
+        const data = await Users.aggregate(pipline);
+        console.log(data);
+
+        res.status(200).json({
+            success: true,
+            data: data,
+            message: "User data fetched successfully",
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error." + error.message
+        });
+    }
+}
+
 module.exports = {
     ragister,
     login,
@@ -309,5 +504,11 @@ module.exports = {
     logout,
     ragisterotp,
     authcheck,
-    Tokenaccess
+    Tokenaccess,
+    listUser,
+    orderofuser,
+    updateUser,
+    deleteUser,
+    getuserdata,
+    searchUser
 }

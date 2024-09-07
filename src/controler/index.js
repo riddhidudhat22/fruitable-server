@@ -4,3 +4,7 @@ module.exports.product=require('./product.controler');
 module.exports.variantcontroler=require('./variants.controler');
 module.exports.salespeoplecontroler=require('./salespeople.controler')
 module.exports.userscontroler=require('./users.controler')
+module.exports.Ratingesdata=require('./ratings.controler')
+module.exports.Ordercontroler=require('./orders.controler')
+module.exports.paymentscontroler=require('./payments.controler')
+module.exports.cartcontroler=require('./carts.controler')

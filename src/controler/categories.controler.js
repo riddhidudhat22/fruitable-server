@@ -1,4 +1,5 @@
 
+const { default: mongoose } = require("mongoose");
 const Categories = require("../model/categories.model");
 
 const listcategories = async (req, res) => {
@@ -225,10 +226,42 @@ const inactivecategory = async (req, res) => {
 
 
 const averagenuproduct = async (req, res) => {
-    const averagenuproduct = await Categories.aggregate([
-
-    ]);
-    console.log(averagenuproduct);
+    try {
+        const count = await Categories.aggregate([
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "categori_id",
+                    as: "Products"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$Products"
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    category_name: { $first: "$name" },
+                    totalProduct: {
+                        $sum: 1
+                    }
+                }
+            }
+        ]);
+        res.status(200).json({
+            success: true,
+            message: "Inactive category count",
+            data: count,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal server error: " + error.message,
+        });
+    }
 }
 
 const countsubcategories = async (req, res) => {
@@ -246,7 +279,7 @@ const countsubcategories = async (req, res) => {
             $project: {
                 _id: 1,
                 category_name: "$name",
-                countsubcategories: "$Subacategory"
+                countsubcategories: { $size: "$Subacategory" }
             }
         }
 
@@ -260,8 +293,14 @@ const countsubcategories = async (req, res) => {
 }
 
 const subcategorioncategori = async (req, res) => {
+    const {categori_id}=req.params
     const retviecategoryonsubcate = await Categories.aggregate([
 
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(categori_id)  
+            }
+        },
         {
             $lookup: {
                 from: "subcategories",
@@ -287,6 +326,7 @@ const subcategorioncategori = async (req, res) => {
 
     console.log(retviecategoryonsubcate);
 }
+
 
 module.exports = {
     listcategories,

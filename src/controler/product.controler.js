@@ -218,37 +218,35 @@ const getproducttawith = async (req, res) => {
     }
 }
 
-// const searchName = async (req, res) => {
 
-//     //Retrieve the product using sortOrder, rating, max, min, category, page = 1, limit = 10)
+
+// const searchName = async (req, res) => {
 //     try {
 //         console.log(req.body);
-//         const { sortOrder, rating, max, min, category, page, limit } = req.body
+//         const { sortOrder, rating, max, min, category, page, limit } = req.query;;
 
-//         const matchPip = {}
+//         const matchPip = {};
 
 //         if (rating) {
-//             matchPip['avgRating'] = { $gte: rating }
+//             matchPip['avgRating'] = { "$gte": rating };
 //         }
 //         if (category) {
-//             matchPip['category_id'] = category
+//             matchPip['category_id'] = category;
 //         }
 
-//         matchPip['variant.attributes.Price'] = {}
-
+//         if (min != undefined || max != undefined) {
+//         matchPip['variant.attributes.Price'] = {};
 //         if (min != undefined) {
-//             matchPip['variant.attributes.Price'].$gte = min
+//             matchPip['variant.attributes.Price'].$gte = min;
 //         }
-
 //         if (max != undefined) {
-//             matchPip['variant.attributes.Price'].$lte = max
+//             matchPip['variant.attributes.Price'].$lte = max;
+//         }
 //         }
 
-//         console.log(matchPip);
+//         console.log("kkkkkkkkkkkkkkkk",matchPip);
 
-
-
-//         const pipline = [
+//         const pipeline = [
 //             {
 //                 $lookup: {
 //                     from: 'variants',
@@ -267,90 +265,89 @@ const getproducttawith = async (req, res) => {
 //             },
 //             {
 //                 $addFields: {
-//                     avgrating: '$review.rating'
+//                     avgRating: { $avg: '$review.rating' }
 //                 }
 //             },
 //             {
 //                 $unwind: {
-//                     path: '$variant',
-
+//                     path: '$variant'
 //                 }
 //             },
 //             {
 //                 $match: matchPip
-
-//                 // {
-//                 //     avgrating: { $gte: 4 },
-//                 //     category_id: 1,
-//                 //     'variant.attributes.Price': { $gte: 0, $lte: 10000 }
-//                 // }
 //             },
 //             {
 //                 $group: {
 //                     _id: '$_id',
 //                     name: { $first: '$name' },
 //                     variant: { $push: "$variant" },
-//                     review: { $push: "$review" }
+//                     review: { $push: "$review" },
+//                     avgRating: { $first: "$avgRating" }
 //                 }
 //             },
 //             {
 //                 $sort: {
-//                     name: sortOrder==="avbc" ? 1 : -1
+//                     name: sortOrder === "asc" ? 1 : -1
 //                 }
 //             },
 //             {
-//                 $skip: 0
+//                 $skip: (page - 1) * limit
 //             },
 //             {
-//                 $limit: 10
+//                 $limit: limit
 //             }
-//         ]
+//         ];
 
+//         if (page>0&&limit>0) {
+//             pipeline.push({$skip: (page-1)*limit})
+//             pipeline.push({ $limit: limit})
+//         }
+//         const data = await Products.aggregate(pipeline);
 
-//         // if (page > 0 && limit > 0) {
-//         //     pipline.push({ $skip: (page - 1) * limit })
-//         //     pipline.push({ $limit:  limit })
-//         // }
-
-//         const data = await Products.aggregate(pipline)
-//         console.log(data);
-
-//         // res.status(400).json({
-//         //     success: true,
-//         //     message: "Product data fected",
-//         //     data: data
-//         // })
+//  console.log("gygyggyggggggg",data);
+//         res.status(200).json({
+//             success: true,
+//             message: "Product data fetched",
+//             data: data
+//         });
 
 //     } catch (error) {
-
+//         console.error(error);
+//         res.status(500).json({
+//             success: false,
+//             message: "An error occurred while fetching products",
+//             error: error.message
+//         });
 //     }
+// };
 
-// }
+
+
 const searchName = async (req, res) => {
     try {
-        console.log(req.body);
-        const { sortOrder, rating, max, min, category, page, limit} = req.body;
+        console.log(req.query);
+        const { sortOrder, rating, max, min, category, page, limit } = req.query;;
 
         const matchPip = {};
 
         if (rating) {
-            matchPip['avgRating'] = { "$gte": rating };
+            matchPip['avgRating'] = { "$gte": parseInt(rating) };
         }
         if (category) {
-            matchPip['category_id'] = category;
+            matchPip['category_id'] = parseInt(category);
         }
 
-        // if (min != undefined || max != undefined) {
+        if (min != undefined || max != undefined) {
             matchPip['variant.attributes.Price'] = {};
             if (min != undefined) {
-                matchPip['variant.attributes.Price'].$gte = min;
+                matchPip['variant.attributes.Price'].$gte = parseFloat(min);
             }
             if (max != undefined) {
-                matchPip['variant.attributes.Price'].$lte = max;
+                matchPip['variant.attributes.Price'].$lte = parseFloat(max);
             }
-        // }
+        }
 
-        console.log(matchPip);
+        console.log("kkkkkkkkkkkkkkkk", matchPip);
 
         const pipeline = [
             {
@@ -388,24 +385,21 @@ const searchName = async (req, res) => {
                     name: { $first: '$name' },
                     variant: { $push: "$variant" },
                     review: { $push: "$review" },
-                    avgRating: { $first: "$avgRating" }
                 }
             },
             {
                 $sort: {
                     name: sortOrder === "asc" ? 1 : -1
                 }
-            },
-            {
-                $skip: (page - 1) * limit
-            },
-            {
-                $limit: limit
             }
         ];
 
+        if (page > 0 && limit > 0) {
+            pipeline.push({ $skip: (parseInt(page) - 1) * parseInt(limit) })
+            pipeline.push({ $limit: parseInt(limit) })
+        }
         const data = await Products.aggregate(pipeline);
-        console.log(data);
+        console.log("gygyggyggggggg", data);
 
         res.status(200).json({
             success: true,
@@ -414,7 +408,7 @@ const searchName = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error(error.message);
         res.status(500).json({
             success: false,
             message: "An error occurred while fetching products",
@@ -422,6 +416,7 @@ const searchName = async (req, res) => {
         });
     }
 };
+
 
 const productsByCategory = async (req, res) => {
 
@@ -498,29 +493,6 @@ const productsBySubcategory = async (req, res) => {
 const topRate = async (req, res) => {
 
     const products = await Products.aggregate([
-
-        {
-            $lookup: {
-                from: "reviews",
-                localField: "_id",
-                foreignField: "product_id",
-                as: "review"
-            }
-        },
-        {
-            $unwind: {
-                path: "$review"
-            }
-        },
-        {
-            $group: {
-                _id: "$_id",
-                "product_name": { $first: "$name" },
-                "Totalrating": {
-                    $sum: "$review.rating"
-                }
-            }
-        },
         {
             $sort: {
                 "Totalrating": -1
@@ -605,6 +577,171 @@ const countCategories = async (req, res) => {
 
 }
 
+const discount = async (req, res) => {
+    try {
+
+
+        const product = await Products.aggregate(
+            [
+                {
+                    $match: {
+                        isActive: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "categori_id",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "subcategories",
+                        localField: "subcategori_id",
+                        foreignField: "_id",
+                        as: "subcategory"
+                    }
+                },
+                {
+                    $unwind: "$category" // Flatten the category array
+                },
+                {
+                    $unwind: "$subcategory" // Flatten the subcategory array
+                },
+                {
+                    $group: {
+                        _id: {
+                            category_id: "$categori_id",
+                            subcategory_id: "$subcategori_id" // Corrected field name to match
+                        },
+                        category_name: { $first: "$category.name" },
+                        subcategory_name: { $first: "$subcategory.name" },
+                        products: {
+                            $push: {
+                                _id: "$_id",
+                                name: "$name",
+                                description: "$description",
+                                price: "$price",
+                                stock: "$stock"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        category_id: "$_id.category_id",
+                        subcategory_id: "$_id.subcategory_id",
+                        category_name: 1,
+                        subcategory_name: 1,
+                        products: 1
+                    }
+                }
+            ]
+
+        );
+
+
+
+        res.status(200).json({
+            success: true,
+            message: "Product fetched sucessfully",
+            data: product
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Intenal server error." + error.message
+        })
+    }
+}
+const outofstock = async (req, res) => {
+    console.log("ok");
+
+    const outofstock = await Products.aggregate([
+        {
+            "$lookup": {
+                "from": "variants",
+                "localField": "_id",
+                "foreignField": "product_id",
+                "as": "variants"
+            }
+        },
+        {
+            "$match": {
+                "variants": { "$size": 0 },
+                "stock": 0
+            }
+        },
+        {
+            "$project": {
+                "_id": 1,
+                "name": 1,
+                "description": 1,
+                "price": 1,
+                "stock": 1
+            }
+        }
+    ]
+    )
+    res.status(200).json({
+        success: true,
+        message: 'product fetch successfully.',
+        data: outofstock
+    })
+    console.log(outofstock);
+}
+
+const variantsDatils = async (req, res) => {
+    const variantsDatils = await Products.aggregate(
+        [
+            // {
+            //   $match: {
+            //     _id: ObjectId("66704274d11211519b0d6b68")
+            //   }
+            // },
+            {
+                $lookup: {
+                    from: "variants",
+                    localField: "_id",
+                    foreignField: "product_id",
+                    as: "variants"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$variants"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    description: 1,
+                    price: 1,
+                    stock: 1,
+                    variants: {
+                        _id: "$variants._id",
+                        variant_name: "$variants.name",
+                        variant_price: "$variants.price",
+                        variant_stock: "$variants.stock",
+                        variant_details: "$variants.details"
+                    }
+                }
+            }
+        ]
+
+
+    )
+    res.status(200).json({
+        success: true,
+        message: "Products get  succesfully",
+        data: variantsDatils
+    })
+}
 module.exports = {
     listproducts,
     addproducts,
@@ -617,8 +754,24 @@ module.exports = {
     productsBySubcategory,
     topRate,
     newArrivals,
-    countCategories
+    countCategories,
+    discount,
+    outofstock,
+    variantsDatils
 }
 
 
 // http://localhost:8000/api/v1/products/search?sortOrder=asc&rating=4&max=10000&min=0&category=1&page=1&limit=1
+
+
+
+
+// http://localhost:8000/api/v1/products/search?sortOrder=asc&rating=4&max=5000&min=0&category=1&page=1&limit=2
+
+
+
+
+
+
+
+

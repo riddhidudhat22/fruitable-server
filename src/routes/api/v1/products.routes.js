@@ -55,6 +55,25 @@ router.get( '/new-arrivals',
 router.get('/count-categories',
     product.countCategories
 )
+router.get('/discounts',
+    product.discount
+)
+// router.get('/discounts',
+//     product.discount
+// )
+router.get(
+    '/out-of-stock',
+    product.outofstock
+)
 
-
+router.get(
+    '/variant-details/:product_id',
+    product.variantsDatils
+)
 module.exports = router;
+
+
+
+
+
+// localhost:8000/api/v1/productes/search-productes?sortOrder=asc&rating=4&max=100000&min=0&category=1&page=1&limit=2

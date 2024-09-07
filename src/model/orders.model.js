@@ -3,18 +3,18 @@ const mongoose = require("mongoose");
 
 const itemsScheema = new mongoose.Schema(
     {
-        stats: {
-            type: String,
-            require: true
+        product_id: {
+            type: mongoose.Types.ObjectId,
+            ref: "Products",
+            // required: true,
         },
-        address:{
-            type:String,
-            require:true
+        quntity: {
+            type: Number,
+            required: true,
+            default: 1,
         },
-        shiping:{
-
-        }
     }
+   
 )
 
 const categoryesScheema = new mongoose.Schema(
@@ -24,14 +24,15 @@ const categoryesScheema = new mongoose.Schema(
             ref: 'Users',
             require: true
         },
-        saller_id: {
-            type: mongoose.Types.ObjectId,
-            ref: 'Users',
-            require: true
-        },
+
         payment_id: {
             type: mongoose.Types.ObjectId,
             ref: 'Payments',
+            require: true
+        },
+        seller_id: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Users',
             require: true
         },
         amount: {
@@ -39,12 +40,21 @@ const categoryesScheema = new mongoose.Schema(
             require: true
         },
 
-        item:[itemsScheema],
-
+        item: [itemsScheema],
+        stats: {
+            type: String,
+            require: true
+        },
+        shiping_address: {
+            type: String,
+            require: true
+        },
+        discount:{
+            type: Number,
+        },
         isActive: {
             type: Boolean,
             default: true,
-
         }
     },
     {
@@ -53,6 +63,6 @@ const categoryesScheema = new mongoose.Schema(
     }
 );
 
-const Orders=mongoose.model('Orders',categoryesScheema);
+const Orders = mongoose.model('Orders', categoryesScheema);
 
-module.exports=Orders;
+module.exports = Orders;

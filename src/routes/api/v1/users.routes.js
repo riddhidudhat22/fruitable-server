@@ -24,6 +24,11 @@ router.get('/veryfeotp',
 router.get('/authcheck',
     userscontroler.authcheck
 );
+
+router.get('/get-user/:users_id',
+    userscontroler.getuserdata
+);
+
 router.post('/ragisterotp',
     sendotp,
     userscontroler.ragisterotp
@@ -95,6 +100,31 @@ router.get('/pdfsend',
     exportpdfmake
 )
 
+router.get(
+    '/list-user',
+    userscontroler.listUser
+)
+
+
+router.get(
+    '/order/:users_id',
+    userscontroler.orderofuser
+)
+
+router.put(
+    '/update-user/:users_id',
+    userscontroler.updateUser
+)
+
+router.delete(
+    '/delete-user/:users_id',
+    userscontroler.deleteUser
+)
+
+
+router.get('/searchdata',
+    userscontroler.searchUser
+)
 module.exports = router;
 
 // http://localhost:8000/api/v1/users/facebooklogin

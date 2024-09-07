@@ -20,5 +20,17 @@ router.use("/salespeoples",salespeopleRouter)
 const usersRouter = require('./users.routes')
 router.use("/users",usersRouter)
 
+const reviewsRouter = require('./ratings.routes')
+router.use("/ratings",reviewsRouter)
+
+const ordersRouter = require('./orders.routes')
+router.use("/orders",ordersRouter)
+
+const paymentsRouter = require('./payments.routes')
+router.use("/payments",paymentsRouter)
+
+const cartsRouter = require('./carts.routes')
+router.use("/carts",cartsRouter)
+
 module.exports = router;
 

@@ -4,8 +4,11 @@ info:
   description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
   version: 0.1.9
 servers:
-  - url: https://fruitable-server-three.vercel.app
-    description: vercel
+  - url: http://localhost:8000/api/v1
+    description: localhost server
+  # - url: https://fruitable-server-three.vercel.app
+  #   description: vercel
+
   - url: http://example.com
     description: Optional server description, e.g. Internal staging server for testing
 components:
@@ -134,6 +137,148 @@ paths:
                 type: array
                 items: 
                   type: string 
+  /users/list-user:
+    get:
+      summary: list user.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /users/order/{users_id}:
+    get:
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+          required: true
+          description: get users.
+      summary: get users.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /users/update-user/{users_id}:
+    put:
+      summary: update user.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+          required: true
+          description: Update user.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                role:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string                            
+  /users/delete-user/{users_id}:
+    delete:
+      summary: delete user.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+          required: true
+          description: delete user.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                users_id:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /users/get-user/{users_id}:
+    get:
+      summary: users.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Users  
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+          required: true
+          description: Update users
+          
+      responses:
+        '200':
+          description: users in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  # /users/searchuser:
+  #   get:
+  #     summary: search users.
+  #     description: Optional extended description in CommonMark or HTML.
+  #     tags:
+  #     - Users
+  #     responses:
+  #       '200':    # status code
+  #         description: A JSON array of user names
+  #         content:
+  #           application/json:
+  #             schema: 
+  #               type: array
+  #               items: 
+  #                 type: string 
+
 
   /categories/list-category:
     get:
@@ -251,7 +396,129 @@ paths:
                 type: array
                 items:  
                   type: string
-
+  /categories/category/count-active:
+    get:
+      summary: Returns a count of active categories.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories
+      responses:
+        '200':
+          description: The count of active categories.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: The number of active categories.     
+  /categories/category/inactive:
+    get:
+      summary: Returns a count of inactive categories.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories
+      responses:
+        '200':
+          description: The count of inactive categories.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  match:
+                    type: integer
+                    description: The number of active categories.
+  /categories/category/most-products:
+    get:
+      summary: categories with the highest number of products.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories
+      responses:
+        '200':
+          description: categories with the highest number of products.
+          content:
+            application/json:
+              schema:
+                type: object             
+  /categories/category/count-subcategories:
+    get:
+      summary: count of subcategories for each category.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories
+      responses:
+        '200':
+          description: count of subcategories for each category.
+          content:
+            application/json:
+              schema:
+                type: object      
+  /categories/category-subcategory/{categori_id}:
+    get:
+      summary: subcategory in a specific category.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories
+      parameters:
+        - in: path
+          name: categori_id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: subcategory in a specific category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category_id:
+                    type: string
+                    description: The number of active categories.          
+  /categories/get-category/{categori_id}:
+    get:
+      summary: Categories.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - categories  
+      parameters:
+        - in: path
+          name: categori_id
+          schema:
+            type: string
+          required: true
+          description: Update category
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /categories/category/average-products:
+    get:
+      summary: Returns a count of active categories.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - categories 
+      responses:
+        '200':
+          description: average number of products per category.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: The number of active categories.
+  
   /subcategories/list-subcategory:
     get:
       summary: list subcategories.
@@ -359,6 +626,116 @@ paths:
                 type: array
                 items:  
                   type: string
+  /subcategories/get-subcategory/{subcategori_id}:
+    get:
+      summary: subcategori get.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - subcategories  
+      parameters:
+        - in: path
+          name: subcategori_id
+          schema:
+            type: string
+          required: true
+          description: subcategori get suss
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /subcategories/parent-of-subcategory/{categori_id}:
+    get:
+      summary: category of subcategory.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - subcategories  
+      parameters:
+        - in: path
+          name: categori_id
+          schema:
+            type: string
+          required: true
+          description: category of subcategory
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /subcategories/count-active:
+    get:
+      summary:  total count of active subcategories.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - subcategories
+      responses:
+        '200':
+          description:  total count of active subcategories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description:  total count of active subcategories.  
+  /subcategories/most-products:
+    get:
+      summary: subcategories with the highest number of products..
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - subcategories
+      responses:
+        '200':
+          description: subcategories with the highest number of products.
+          content:
+            application/json:
+              schema:
+                type: object            
+  /subcategories/inactive:
+    get:
+      summary: list of inactive subcategories..
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - subcategories
+      responses:
+        '200':
+          description: list of inactive subcategories.
+          content:
+            application/json:
+              schema:
+                type: object 
+              properties:
+                  match:
+                    type: integer
+                    description: The number of active categories.      
+  /subcategories/count-products:
+    get:
+      summary: count of products for each subcategory.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - subcategories
+      responses:
+        '200':
+          description: count of products for each subcategory.
+          content:
+            application/json:
+              schema:
+                type: object
+              properties:
+                  count:
+                    type: integer
+                    description: count of products for each subcategory.   
 
   /products/list-product:
     get:
@@ -491,6 +868,249 @@ paths:
                 type: array
                 items:  
                   type: string
+  /products/get-product/{product_id}:
+    get:
+      summary: products get.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - products  
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: string
+          required: true
+          description: products get suss
+          
+      responses:
+        '200':
+          description: products get.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /products/list-category/{categori_id}:
+    get:
+      summary: products by category.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - products  
+      parameters:
+        - in: path
+          name: categori_id
+          schema:
+            type: string
+          required: true
+          description: roducts by category
+          
+      responses:
+        '200':
+          description: roducts by category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: strin
+  /products/list-subcategory/{subcategori_id}:
+      get:
+        summary: products by subcategory.
+        description: Optional extended description in CommonMark or HTML.
+        tags:
+          - products  
+        parameters:
+          - in: path
+            name: subcategori_id
+            schema:
+              type: string
+            required: true
+            description: products by subcategory
+            
+        responses:
+          '200':
+            description: products by subcategory.
+            content:
+              application/json:
+                schema:
+                  type: array
+                items:
+                  type: string
+  /products/top-rated:
+     get:
+      summary: products with the highest rating.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - products
+      responses:
+        '200':
+          description: products with the highest rating
+          content:
+            application/json:
+              schema:
+                type: object  
+  /products/new-arrivals:
+     get:
+      summary:  recently added products.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - products
+      responses:
+        '200':
+          description:  recently added products.
+          content:
+            application/json:
+              schema:
+                type: object  
+  /products/count-categories:
+     get:
+      summary: products with the highest number of products..
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - products
+      responses:
+        '200':
+          description: products with the highest number of products.
+          content:
+            application/json:
+              schema:
+                type: object  
+  /products/discounts:
+    get:
+      summary: recently added products.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - products
+      responses:
+        '200':
+          description: discounts.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /products/out-of-stock:
+    get:
+      summary: recently added products.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - products
+      responses:
+        '200':
+          description: out-of-stock.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /products/variant-details/{product_id}:
+    get:
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: string
+          required: true
+          description: variant_details.
+      summary: get products.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - products
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /products/search:
+    get:
+      summary: Search and filter products
+      description: Fetches products based on the search criteria such as rating, category, price range, and pagination.
+      tags:
+        - products
+      parameters:
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort order for product names. Can be 'asc' or 'desc'.
+        - in: query
+          name: rating
+          schema:
+            type: integer
+          description: Minimum average rating to filter products.
+        - in: query
+          name: max
+          schema:
+            type: number
+          description: Maximum price to filter products.
+        - in: query
+          name: min
+          schema:
+            type: number
+          description: Minimum price to filter products.
+        - in: query
+          name: category
+          schema:
+            type: integer
+          description: Category ID to filter products.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Number of products per page.
+      responses:
+        200:
+          description: Successful response with filtered product data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        name:
+                          type: string
+                        variant:
+                          type: array
+                          items:
+                            type: object
+                        review:
+                          type: array
+                          items:
+                            type: object
+        500:
+          description: Error occurred while fetching products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  error:
+                    type: string
 
 
   /variants/list-variant:
@@ -519,7 +1139,6 @@ paths:
                 type: array
                 items: 
                   type: string
-
   /variants/add-variant:
     post:
       summary: Add variants.
@@ -556,7 +1175,6 @@ paths:
                 type: array
                 items: 
                   type: string
-
   /variants/update-variant/{variant_id}:
     put:
       summary: update variants.
@@ -592,7 +1210,6 @@ paths:
                 type: array
                 items:  
                   type: string
-
   /variants/delete-variant/{variant_id}:
     delete:
       summary: delete products.
@@ -624,3 +1241,1218 @@ paths:
                 type: array
                 items:  
                   type: string
+  /variants/get-variant/{variant_id}:
+    get:
+      summary: variants.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - variants  
+      parameters:
+        - in: path
+          name: variant_id
+          schema:
+            type: string
+          required: true
+          description: Update category
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+
+  /variants/list-variant/{product_id}:
+    get:
+      summary: variants.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - variants  
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: string
+          required: true
+          description: Update category
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /variants/count-stock/{product_id}:
+    get:
+      summary: variants.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - variants  
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: string
+          required: true
+          description: Update category
+          
+      responses:
+        '200':
+          description: subcategory in a specific category.
+          content:
+            application/json:
+              schema:
+                type: array
+              items:
+                type: string
+  /variants/low-quantity:
+    get:
+      summary: recently added variants.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - variants
+      responses:
+        '200':
+          description: low-quantity.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /variants/high-price:
+    get:
+      summary: recently added variants.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - variants
+      responses:
+        '200':
+          description: high-price.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /variants/multiple-variants:
+    get:
+      summary: recently added variants.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - variants
+      responses:
+        '200':
+          description: multiple-variants.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /variants/active:
+    get:
+      summary: recently added variants.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - variants
+      responses:
+        '200':
+          description: active.
+          content:
+            application/json:
+              schema:
+                type: object 
+  /variants/count-products:
+    get:
+      summary: recently added variants.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - variants
+      responses:
+        '200':
+          description: count-products.
+          content:
+            application/json:
+              schema:
+                type: object 
+
+  /ratings/list-rating:
+    get:
+      summary: list rating.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - reviews
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /ratings/create-review:
+    post:
+      summary: Add reviews.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - reviews
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                users_id:
+                  type: string
+                rating:
+                  type: string
+                review:
+                  type: string
+                comment:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /ratings/delete-review/{review_id}:
+    delete:
+      summary: delete reviews.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - reviews
+      parameters:
+        - in: path
+          name: review_id
+          schema:
+            type: string
+          required: true
+          description: delete reviews.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                reviews_id:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:  
+                  type: string 
+  /ratings/update-review/{review_id}:
+    put:
+      summary: Update a review
+      description: Update the review based on the provided review ID and request body.
+      tags:
+        - reviews
+      parameters:
+        - in: path
+          name: review_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the review to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: string
+                review:
+                  type: string
+                comment:
+                  type: string
+      responses:
+        '200':
+          description: Review successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string         
+  /ratings/count-products:
+    get:
+      summary: count of reviews for each product.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - reviews
+      responses:
+        '200':
+          description: count of reviews for each product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: count of reviews for each product.
+  /ratings/top-rated-products:
+    get:
+      summary: count of reviews for each product.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - reviews
+      responses:
+        '200':
+          description: count of reviews for each product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: count of reviews for each product.
+  /ratings/get-review/{review_id}:
+    get:
+      parameters:
+        - in: path
+          name: review_id
+          schema:
+            type: string
+          required: true
+          description: get reviews.
+      summary: get products.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - reviews
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /ratings/with-comments:
+    get:
+      summary: reviews that include comments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - reviews
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /ratings/no-reviews:
+    get:
+      summary: count of reviews for each product.
+      description: Retrieves the number of categories that are currently active in the system.
+      tags:
+        - reviews
+      responses:
+        '200':
+          description: count of reviews for each product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: count of reviews for each product.
+  
+
+
+  /orders/list-order:
+    get:
+      summary: list order.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - orders
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /orders/add-order:
+      post:
+        summary: Add order
+        description: Add a new order with essential details including associated products.
+        tags:
+          - orders
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users_id:
+                    type: string
+                    description: The ID of the user placing the order
+                  payment_id:
+                    type: string
+                    description: The ID of the payment method used
+                  seller_id:
+                    type: string
+                  amount:
+                    type: number
+                    description: The base amount of the order
+                  item:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          description: The ID of the product
+                        quntity:
+                          type: integer
+                          description: The quantity of the product
+                  shiping_address:
+                    type: string
+                    description: The shipping address for the order      
+                  discount:
+                    type: number
+                    format: float
+                    description: The discount applied to the order
+                  stats:
+                    type: string
+                    description: The status of the order
+        responses:
+          '201':
+            description: Order created successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      example: true
+                    message:
+                      type: string
+                      example: Order added successfully.
+                    data:
+                      type: object
+                      properties:
+                        user_id:
+                          type: string
+                          example: "64f4b5e0c2d6f40004c6f2b8"
+                        seller_id:
+                          type: string
+                          example: "64f4b5e0c2d6f40004c6f2c0"
+                        payment_id:
+                          type: string
+                          example: "64f4b5e0c2d6f40004c6f2b9"
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              product_id:
+                                type: string
+                                example: "64f4b5e0c2d6f40004c6f2ba"
+                              quantity:
+                                type: integer
+                                example: 2
+                              _id:
+                                type: string
+                                example: "66da7b6db4dd5f26975266ad"
+                        shipping_address:
+                          type: string
+                          example: "123 Elm Street, Springfield, IL, 62701"
+                        amount:
+                          type: number
+                          format: float
+                          example: 150.0
+                        discount:
+                          type: number
+                          format: float
+                          example: 20.0
+                        total_amount:
+                          type: number
+                          format: float
+                          example: 130.0
+                        status:
+                          type: boolean
+                          example: true
+                        shipping_amount:
+                          type: number
+                          format: float
+                          example: 10.0
+          '400':
+            description: Bad request, missing required fields
+          '500':
+            description: Internal server error
+
+  /orders/get-order/{order_id}:
+    get:
+      parameters:
+        - in: path
+          name: order_id
+          schema:
+            type: string
+          required: true
+          description: get orders.
+      summary: get products.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - orders
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /orders/update-order/{order_id}:
+    put:
+      summary: Update a order
+      description: Update the review based on the provided review ID and request body.
+      tags:
+        - orders
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the order to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                stats:
+                  type: string
+                item:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                      quntity:
+                        type: integer
+                        default: 1
+                shiping_address:
+                    type: string
+                discount:
+                  type: number
+      responses:
+        '200':
+          description: Review successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string 
+  /orders/delete-order/{order_id}:
+    delete:
+      summary: delete reviews.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - orders
+      parameters:
+        - in: path
+          name: order_id
+          schema:
+            type: string
+          required: true
+          description: delete orders.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:  
+                  type: string 
+  /orders/user/{users_id}:
+    get:
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+          required: true
+          description: ID of the user whose orders are to be fetched.
+      summary: Get all orders for a specific user.
+      description: Retrieves all orders associated with a given user ID.
+      tags:
+        - orders
+      responses:
+        '200':
+          description: A list of orders for the specified user.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: string
+                        product_id:
+                          type: string
+                        quntity:
+                          type: integer
+                        status:
+                          type: string
+        '404':
+          description: No orders found for the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /orders/product/{product_id}:
+    get:
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: string
+          required: true
+          description: ID of the user whose orders are to be fetched.
+      summary: Get all orders for a specific user.
+      description: Retrieves all orders associated with a given user ID.
+      tags:
+        - orders
+      responses:
+        '200':
+          description: A list of orders for the specified user.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: string
+                        product_id:
+                          type: string
+                        quntity:
+                          type: integer
+                        status:
+                          type: string
+        '404':
+          description: No orders found for the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /orders/cancel:
+    get:
+      summary: cancel orders.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - orders
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /orders/seller/{seller_id}:
+    get:
+      parameters:
+        - in: path
+          name: seller_id
+          schema:
+            type: string
+          required: true
+          description: ID of the user whose orders are to be fetched.
+      summary: Get all orders for a specific user.
+      description: Retrieves all orders associated with a given user ID.
+      tags:
+        - orders
+      responses:
+        '200':
+          description: A list of orders for the specified user.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+        '404':
+          description: No orders found for the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /payments/list-payments:
+    get:
+      summary: list payments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /payments/add-payments:
+    post:
+      summary: Add payments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                gateway:
+                  type: string
+                status:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /payments/update-payments/{payment_id}:
+    put:
+      summary: update payments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      parameters:
+        - in: path
+          name: payment_id
+          schema:
+            type: string
+          required: true
+          description: Update payments.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                gateway:
+                  type: string
+                status:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:  
+                  type: string
+  /payments/delete-payments/{payment_id}:
+    delete:
+      summary: delete payments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      parameters:
+        - in: path
+          name: payment_id
+          schema:
+            type: string
+          required: true
+          description: delete payments.
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                payment_id:
+                  type: string
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:  
+                  type: string
+  /payments/get-payments/{payment_id}:
+    get:
+      parameters:
+        - in: path
+          name: payment_id
+          schema:
+            type: string
+          required: true
+          description: get orders.
+      summary: get products.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /payments/order/{order_id}:
+    get:
+      parameters:
+        - in: path
+          name: order_id
+          schema:
+            type: string
+          required: true
+          description: get orders.
+      summary: get products.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - payments
+      responses:
+        '200':    # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+
+
+  /carts/get-cart/{users_id}:
+    get:
+      summary: Get a cart by user ID
+      description: Fetches the cart for a specific user by their ID.
+      tags:
+        - carts
+      parameters:
+        - in: path
+          name: users_id
+          schema:
+            type: string
+            format: objectid
+          required: true
+          description: The ID of the user whose cart to fetch.
+      responses:
+        '200':
+          description: Cart found successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: objectid
+                      users_id:
+                        type: string
+                        format: objectid
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: string
+                              format: objectid
+                            quantity:
+                              type: number
+                      isActive:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '404':
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /carts/add-to-cart:
+    post:
+      summary: Add a new cart
+      description: Add a new cart with essential details including items.
+      tags:
+        - carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users_id:
+                  type: string
+                  format: objectid
+                  description: The ID of the user who owns the cart.
+                isActive:
+                  type: boolean
+                  description: Indicates whether the cart is active or not.
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                        format: objectid
+                        description: The ID of the product in the cart.
+                      quntity:
+                        type: number
+                        description: The quntity of the product.
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    format: objectid
+                    description: The ID of the created cart.
+                  users_id:
+                    type: string
+                    format: objectid
+                    description: The ID of the user who owns the cart.
+                  isActive:
+                    type: boolean
+                    description: Indicates whether the cart is active or not.
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          format: objectid
+                          description: The ID of the product in the cart.
+                        quntity:
+                          type: number
+                          description: The quntity of the product.
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /carts/update-cart/{cart_id}:
+    put:
+      summary: Update a cart
+      description: Update an existing cart with essential details, including items.
+      tags:
+        - carts
+      parameters:
+        - in: path
+          name: cart_id
+          required: true
+          schema:
+            type: string
+            format: objectid
+          description: The ID of the cart to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users_id:
+                  type: string
+                  format: objectid
+                  description: The ID of the user who owns the cart (optional).
+                isActive:
+                  type: boolean
+                  description: Indicates whether the cart is active or not (optional).
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                        format: objectid
+                        description: The ID of the product in the cart.
+                      quntity:
+                        type: number
+                        description: The quantity of the product.
+              required:
+                - items
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart_id:
+                    type: string
+                    format: objectid
+                    description: The ID of the updated cart.
+                  users_id:
+                    type: string
+                    format: objectid
+                    description: The ID of the user who owns the cart.
+                  isActive:
+                    type: boolean
+                    description: Indicates whether the cart is active or not.
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          format: objectid
+                          description: The ID of the product in the cart.
+                        quntity:
+                          type: number
+                          description: The quantity of the product.
+        '404':
+          description: Cart not found
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /carts/delete-cart/{cart_id}/{product_id}:
+    delete:
+      summary: Delete a product from a cart
+      description: Removes a specific product from the cart.
+      tags:
+        - carts
+      parameters:
+        - in: path
+          name: cart_id
+          schema:
+            type: string
+            format: objectid
+          required: true
+          description: The ID of the cart to update.
+        - in: path
+          name: product_id
+          schema:
+            type: string
+            format: objectid
+          required: true
+          description: The ID of the product to remove.
+      responses:
+        '200':
+          description: Product removed from cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: objectid
+                      users_id:
+                        type: string
+                        format: objectid
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: string
+                              format: objectid
+                            quantity:
+                              type: number
+                      isActive:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '404':
+          description: Cart or product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  
